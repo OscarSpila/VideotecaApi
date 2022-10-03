@@ -85,9 +85,13 @@ func (controller TipoDocumentoController) Create(context *gin.Context) {
 	}
 
 	rep := new(repositories.TipoDocumentoRepository)
-	id := rep.Insert(*entity)
+	id, err := rep.Insert(*entity)
 
-	context.JSON(http.StatusCreated, id)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, err.Error())
+	} else {
+		context.JSON(http.StatusCreated, id)
+	}
 }
 
 // Update godoc
@@ -119,12 +123,16 @@ func (controller TipoDocumentoController) Update(context *gin.Context) {
 	}
 
 	rep := new(repositories.TipoDocumentoRepository)
-	rowAffected := rep.Update(id, *entity)
+	rowAffected, err := rep.Update(id, *entity)
 
-	if rowAffected == 0 {
-		context.JSON(http.StatusNotFound, "")
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, err.Error())
 	} else {
-		context.JSON(http.StatusOK, rowAffected)
+		if rowAffected == 0 {
+			context.JSON(http.StatusNotFound, "")
+		} else {
+			context.JSON(http.StatusOK, rowAffected)
+		}
 	}
 }
 
@@ -149,11 +157,15 @@ func (controller TipoDocumentoController) Delete(context *gin.Context) {
 	}
 
 	entityRep := new(repositories.TipoDocumentoRepository)
-	rowAffected := entityRep.Delete(id)
+	rowAffected, err := entityRep.Delete(id)
 
-	if rowAffected == 0 {
-		context.JSON(http.StatusNotFound, "")
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, err.Error())
 	} else {
-		context.JSON(http.StatusOK, "")
+		if rowAffected == 0 {
+			context.JSON(http.StatusNotFound, "")
+		} else {
+			context.JSON(http.StatusOK, rowAffected)
+		}
 	}
 }

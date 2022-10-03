@@ -30,15 +30,19 @@ func (rep TipoDocumentoRepository) Get(id int) *models.TipoDocumento {
 	return entity
 }
 
-func (rep TipoDocumentoRepository) Insert(entity models.TipoDocumento) uint {
+func (rep TipoDocumentoRepository) Insert(entity models.TipoDocumento) (uint, error) {
 	db := db.DBConn
 
-	db.Create(&entity)
+	result := db.Create(&entity)
 
-	return entity.ID
+	if result.Error != nil {
+		return 0, result.Error
+	} else {
+		return entity.ID, nil
+	}
 }
 
-func (rep TipoDocumentoRepository) Update(ID int, entity models.TipoDocumento) int {
+func (rep TipoDocumentoRepository) Update(ID int, entity models.TipoDocumento) (int, error) {
 
 	entityToUpdate := new(models.TipoDocumento)
 
@@ -47,19 +51,27 @@ func (rep TipoDocumentoRepository) Update(ID int, entity models.TipoDocumento) i
 
 	result := db.Model(&entityToUpdate).Updates(map[string]interface{}{"tipo": entity.Tipo, "nombre": entity.Nombre})
 
-	return int(result.RowsAffected)
+	if result.Error != nil {
+		return 0, result.Error
+	} else {
+		return int(result.RowsAffected), nil
+	}
 }
 
-func (rep TipoDocumentoRepository) Delete(ID int) int {
+func (rep TipoDocumentoRepository) Delete(ID int) (int, error) {
 
-	entityToDelete := new(models.Genero)
+	entityToDelete := new(models.TipoDocumento)
 
 	db := db.DBConn
 	db.First(&entityToDelete, ID)
 
 	result := db.Delete(&entityToDelete)
 
-	return int(result.RowsAffected)
+	if result.Error != nil {
+		return 0, result.Error
+	} else {
+		return int(result.RowsAffected), nil
+	}
 }
 
 func (rep TipoDocumentoRepository) GetByDocumentName(documentName string) *models.TipoDocumento {
