@@ -169,3 +169,31 @@ func (controller TipoDocumentoController) Delete(context *gin.Context) {
 		}
 	}
 }
+
+// Recupera todos los Tipo de Documentos Borrados
+func (controller TipoDocumentoController) GetDeletes(context *gin.Context) {
+	entityRep := new(repositories.TipoDocumentoRepository)
+	page := entityRep.GetDeletes(context)
+
+	context.JSON(http.StatusOK, page)
+}
+
+// Recupera un Tipo de Documentos borrado por ID
+func (controller TipoDocumentoController) GetDeletesByID(context *gin.Context) {
+	ID := context.Param("tipoDocumentoID")
+
+	_, err := strconv.Atoi(ID) // se convierte un string a int
+	if err != nil {
+		context.JSON(http.StatusBadRequest, utils.Error("ID is missing."))
+		return
+	}
+
+	entityRep := new(repositories.TipoDocumentoRepository)
+	entity := entityRep.GetDeletesByID(ID)
+
+	if entity.ID == 0 {
+		context.JSON(http.StatusNotFound, "")
+	} else {
+		context.JSON(http.StatusOK, entity)
+	}
+}

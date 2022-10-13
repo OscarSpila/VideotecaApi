@@ -70,7 +70,8 @@ func setupRoutes(router *gin.Engine) {
 	v1.GET("/:tipoDocumentoID", TipoDocumentoController.Get)
 	v1.PUT("/:tipoDocumentoID", TipoDocumentoController.Update)
 	v1.DELETE("/:tipoDocumentoID", TipoDocumentoController.Delete)
-
+	v1.GET("/deletes/", TipoDocumentoController.GetDeletes)
+	v1.GET("/deletes/:tipoDocumentoID", TipoDocumentoController.GetDeletesByID)
 	// Agrego las rutas para la versión v1 de la api del recurso Socio
 	v1 = router.Group("/api/v1/socio")
 

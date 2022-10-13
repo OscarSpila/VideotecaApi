@@ -86,3 +86,25 @@ func (rep TipoDocumentoRepository) GetByDocumentName(documentName string) *model
 
 	return entity
 }
+
+func (rep TipoDocumentoRepository) GetDeletes(context *gin.Context) paginate.Page {
+
+	db := db.DBConn
+
+	pg := paginate.New()
+
+	model := db.Unscoped().Where("deleted_at IS NOT null").Model(&models.TipoDocumento{})
+
+	return pg.Response(model, context.Request, &[]models.TipoDocumento{})
+}
+
+func (rep TipoDocumentoRepository) GetDeletesByID(ID string) *models.TipoDocumento {
+
+	entity := new(models.TipoDocumento)
+
+	db := db.DBConn
+
+	db.Unscoped().Where("deleted_at IS NOT null AND id = ? ", ID).First(&entity)
+
+	return entity
+}
