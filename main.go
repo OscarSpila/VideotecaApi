@@ -82,6 +82,22 @@ func setupRoutes(router *gin.Engine) {
 	v1.PUT("/:socioID", SocioController.Update)
 	v1.DELETE("/:socioID", SocioController.Delete)
 
+	v1 = router.Group("/api/v1/pelicula")
+	peliculaController := new(controllers.PeliculaController)
+	v1.GET("/", peliculaController.Find)
+	v1.POST("/", peliculaController.Create)
+	v1.GET("/:peliculaID", peliculaController.Get)
+	v1.PUT("/:peliculaID", peliculaController.Update)
+	v1.DELETE("/:peliculaID", peliculaController.Delete)
+
+	v1 = router.Group("/api/v1/alquiler")
+	alquilerController := new(controllers.AlquilerController)
+	v1.GET("/", alquilerController.Find)
+	v1.POST("/", alquilerController.Create)
+	v1.GET("/:alquilerID", alquilerController.Get)
+	v1.PUT("/:alquilerID", alquilerController.Update)    // Si se va a permitir modificar un alquiler, hay que analizar bien el caso de uso para determinar que datos se van a cambiar.
+	v1.DELETE("/:alquilerID", alquilerController.Delete) // NO debería poder borrarse un alquiler ya creado. SOLO es a fines demostrativo
+
 }
 
 // Environment variables
