@@ -17,6 +17,7 @@ func SeedDatabase(db *gorm.DB) {
 	db.AutoMigrate(&models.Socio{})
 	db.AutoMigrate(&models.Pelicula{})
 	db.AutoMigrate(&models.Alquiler{})
+	db.AutoMigrate(&models.Devolucion{})
 
 	fmt.Println("Database migrations completed successfully")
 }

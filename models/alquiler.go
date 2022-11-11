@@ -7,11 +7,11 @@ import (
 )
 
 type Alquiler struct {
-	gorm.Model  // -> el gorm.Model implementa el ID, CreatedAt, UpdatedAt, DeletedAt
-	Importe     float64
+	gorm.Model          // -> el gorm.Model implementa el ID, CreatedAt, UpdatedAt, DeletedAt
+	Importe     float64 `json:"importe"`
 	FechaCierre time.Time
-	Abonado     bool
-	SocioID     int
+	Abonado     bool `json:"abonado"`
+	SocioID     int  `json:"socioID"`
 	Socio       Socio
 	Peliculas   []*Pelicula `gorm:"many2many:alquiler_pelicula;"`
 

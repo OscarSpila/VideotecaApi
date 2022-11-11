@@ -31,12 +31,17 @@ func (rep SocioRepository) Get(id int) *models.Socio {
 	return entity
 }
 
-func (rep SocioRepository) Insert(entity models.Socio) uint {
+func (rep SocioRepository) Insert(entity models.Socio) (uint, error) {
 	db := db.DBConn
 
-	db.Create(&entity)
+	result := db.Create(&entity)
 
-	return entity.ID
+	if result.Error != nil {
+		return 0, result.Error
+	} else {
+		return entity.ID, nil
+	}
+	//return entity.ID
 }
 
 func (rep SocioRepository) Update(ID int, entity models.Socio) int {
@@ -50,6 +55,7 @@ func (rep SocioRepository) Update(ID int, entity models.Socio) int {
 		Nombre: entity.Nombre, Apellido: entity.Apellido,
 		FechaNacimiento: entity.FechaNacimiento, CorreoElectronico: entity.CorreoElectronico,
 		TipoDocumentoID: entity.TipoDocumentoID,
+		NumeroDoc:       entity.NumeroDoc,
 	})
 
 	return int(result.RowsAffected)
@@ -65,4 +71,5 @@ func (rep SocioRepository) Delete(ID int) int {
 	result := db.Delete(&entityToDelete)
 
 	return int(result.RowsAffected)
+
 }

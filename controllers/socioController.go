@@ -29,6 +29,7 @@ type SocioController struct{}
 // @Failure      404  {object}  models.Error
 // @Failure      500  {object}  models.Error
 // @Router       /socio/{socioID} [get]
+
 func (controller SocioController) Get(context *gin.Context) {
 	ID := context.Param("socioID")
 
@@ -48,17 +49,17 @@ func (controller SocioController) Get(context *gin.Context) {
 		context.JSON(http.StatusNotFound, "")
 	} else {
 
+		entitySocioDTO.ID = id
 		entitySocioDTO.Apellido = entity.Apellido
 		entitySocioDTO.CorreoElectronico = entity.CorreoElectronico
 		entitySocioDTO.FechaNacimiento = entity.FechaNacimiento.Format("02-01-2006")
 		entitySocioDTO.Nombre = entity.Nombre
 		entitySocioDTO.NombreDocumento = entity.TipoDocumento.Nombre
 		entitySocioDTO.TipoDocumento = entity.TipoDocumento.Tipo
+		entitySocioDTO.NumeroDocumento = entity.NumeroDoc
 
 		// context.JSON(http.StatusOK, entity)
-
 		context.JSON(http.StatusOK, entitySocioDTO)
-
 	}
 }
 
@@ -126,15 +127,22 @@ func (controller SocioController) Create(context *gin.Context) {
 	entity.FechaNacimiento, _ = time.Parse("01/02/2006", entityDTO.FechaNacimiento)
 	entity.Nombre = entityDTO.Nombre
 	entity.TipoDocumento = entityTipoDocumento // asigno el objeto tipo documento a la propiedad de la entidad Socio
+	entity.NumeroDoc = entityDTO.NumeroDocumento
 
 	// Se crea una instancia del repositorio Socio
 	rep := new(repositories.SocioRepository)
 
 	// Persiste el nuevo Socio
-	id := rep.Insert(*entity)
+	id, err := rep.Insert(*entity)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, err.Error())
+	} else {
+		context.JSON(http.StatusCreated, id)
+	}
 
 	// Se retorna al cliente un Http Code Status = 201 (Creación)
-	context.JSON(http.StatusCreated, id)
+	//context.JSON(http.StatusCreated, id)
 }
 
 // Update godoc
@@ -151,6 +159,7 @@ func (controller SocioController) Create(context *gin.Context) {
 func (controller SocioController) Update(context *gin.Context) {
 
 	entityDTO := new(dtos.ModificarSocioDTO)
+
 	entityDB := new(models.Socio)
 
 	// Se convierte el Json al objeto DTO
@@ -180,6 +189,7 @@ func (controller SocioController) Update(context *gin.Context) {
 	// 1 * Verificar que existe el tipo de documeneto indicado en la api.
 	// 2 * Se debe obtener el ID del tipo de documento para guardarlo en la tabla Socio
 	entityTipoDocumento := getDocumentType(entityDTO.NombreDocumento)
+
 	if entityTipoDocumento.ID == 0 {
 		context.JSON(http.StatusBadRequest, "Documento no encontrado")
 		return
@@ -197,11 +207,12 @@ func (controller SocioController) Update(context *gin.Context) {
 	}
 
 	// Mapeo los datos del DTO (ingresado desde la api) a la entidad Socio que se usa para persistirla.
+	entityDB.Nombre = entityDTO.Nombre
 	entityDB.Apellido = entityDTO.Apellido
 	entityDB.CorreoElectronico = entityDTO.CorreoElectronico
 	entityDB.FechaNacimiento, _ = time.Parse("01/02/2006", entityDTO.FechaNacimiento)
-	entityDB.Nombre = entityDTO.Nombre
 	entityDB.TipoDocumentoID = int(entityTipoDocumento.ID) // asigno el id del tipo documento al id del tipo de documento de la entidad a persistir
+	entityDB.NumeroDoc = entityDTO.NumeroDocumento
 
 	// Actualizo el socio en la base de datos
 	rowAffected := rep.Update(id, *entityDB)

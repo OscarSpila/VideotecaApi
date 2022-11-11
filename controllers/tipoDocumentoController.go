@@ -88,7 +88,8 @@ func (controller TipoDocumentoController) Create(context *gin.Context) {
 	id, err := rep.Insert(*entity)
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, err.Error())
+		context.JSON(http.StatusInternalServerError, "Documento ya existente")
+		//context.JSON(http.StatusInternalServerError, err.Error()+"Documento ya existente") NO TIRAR ERROR.
 	} else {
 		context.JSON(http.StatusCreated, id)
 	}

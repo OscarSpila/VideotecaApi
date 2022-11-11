@@ -6,5 +6,5 @@ import (
 
 type Genero struct {
 	gorm.Model        // -> el gorm.Model implementa el ID, CreatedAt, UpdatedAt, DeletedAt
-	Nombre     string `json:"name"`
+	Name       string `gorm:"uniqueIndex:idx_nombregenero" json:"name"`
 }

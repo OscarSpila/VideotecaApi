@@ -12,6 +12,7 @@ type Socio struct {
 	Apellido          string    `json:"lastName"`
 	FechaNacimiento   time.Time `json:"birthday"`
 	CorreoElectronico string    `json:"email"`
-	TipoDocumentoID   int       `json:"documentTypeID"`
+	TipoDocumentoID   int       `gorm:"uniqueIndex:idx_unicosocio" json:"documentTypeID"`
 	TipoDocumento     TipoDocumento
+	NumeroDoc         string `gorm:"uniqueIndex:idx_unicosocio" json:"documentNumber"`
 }

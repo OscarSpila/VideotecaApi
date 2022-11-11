@@ -8,7 +8,7 @@ import (
 
 type Pelicula struct {
 	gorm.Model              // -> el gorm.Model implementa el ID, CreatedAt, UpdatedAt, DeletedAt
-	Nombre        string    `json:"nombre"`
+	Nombre        string    `gorm:"uniqueIndex:idx_nombrepelicula" json:"nombre"`
 	Idioma        string    `json:"idioma"`
 	FechaAlquiler time.Time `json:"fechaAlquiler"`
 	Productora    string    `json:"productora"`

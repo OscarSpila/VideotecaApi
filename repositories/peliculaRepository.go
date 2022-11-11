@@ -30,12 +30,17 @@ func (rep PeliculaRepository) Get(id int) *models.Pelicula {
 	return entity
 }
 
-func (rep PeliculaRepository) Insert(entity models.Pelicula) uint {
+func (rep PeliculaRepository) Insert(entity models.Pelicula) (uint, error) {
 	db := db.DBConn
 
-	db.Create(&entity)
+	result := db.Create(&entity)
 
-	return entity.ID
+	if result.Error != nil {
+		return 0, result.Error
+	} else {
+		return entity.ID, nil
+	}
+
 }
 
 func (rep PeliculaRepository) Update(ID int, entity models.Pelicula) int {
@@ -68,4 +73,8 @@ func (rep PeliculaRepository) Delete(ID int) int {
 	result := db.Delete(&entityToDelete)
 
 	return int(result.RowsAffected)
+}
+
+func (rep PeliculaRepository) GetPeliculasAlquiladas(ID int) {
+
 }

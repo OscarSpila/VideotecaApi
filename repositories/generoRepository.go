@@ -45,7 +45,7 @@ func (rep GeneroRepository) Update(ID int, entity models.Genero) int {
 	db := db.DBConn
 	db.First(&entityToUpdate, ID)
 
-	result := db.Model(&entityToUpdate).Update("nombre", entity.Nombre)
+	result := db.Model(&entityToUpdate).Update("nombre", entity.Name)
 
 	return int(result.RowsAffected)
 }
@@ -60,4 +60,17 @@ func (rep GeneroRepository) Delete(ID int) int {
 	result := db.Delete(&entityToDelete)
 
 	return int(result.RowsAffected)
+}
+
+func (rep GeneroRepository) GetByGeneroID(generoID int) *models.Genero {
+
+	entity := new(models.Genero)
+
+	db := db.DBConn
+
+	// Get first matched record
+	db.Where("id = ?", generoID).First(&entity)
+	// SELECT * FROM tipodocumentos WHERE nombre = 'algo_a_buscar' ORDER BY id LIMIT 1;
+
+	return entity
 }
