@@ -61,3 +61,16 @@ func (rep GeneroRepository) Delete(ID int) int {
 
 	return int(result.RowsAffected)
 }
+
+func (rep GeneroRepository) GetByGeneroName(Genero string) *models.Genero {
+
+	entity := new(models.Genero)
+
+	db := db.DBConn
+
+	// Get first matched record
+	db.Where("name = ?", Genero).First(&entity)
+	// SELECT FROM tipodocumentos WHERE nombre = 'algo_a_buscar' ORDER BY id LIMIT 1;
+
+	return entity
+}
